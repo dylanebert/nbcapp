@@ -1,0 +1,206 @@
+<html>
+<head>
+    <title>nbcapp</title>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+</head>
+<style>
+body {
+    padding-top: 70px;
+}
+video, img {
+    max-width: 100%;
+    height: auto;
+}
+ul {
+    list-style: none;
+}
+.pro:before {
+    content: '✓';
+    color: green;
+}
+.con:before {
+    content: '✕';
+    color: red;
+}
+#footerLink, #footerLink:hover {
+    color: inherit;
+}
+</style>
+<body>
+<nav class="navbar fixed-top navbar-light bg-light">
+    <div class="container">
+        <a href="#top" class="navbar-brand">New Brown Corpus</a>
+        <a class="btn btn-primary my-2 my-sm-0" type="button" href="https://github.com/dylanebert/nbc" target="_blank">Download</a>
+    </div>
+</nav>
+<div name="top" class="container py-5">
+    <div class="row">
+        <div class="col-sm-10">
+            <p class="lead">what is</p>
+            <h1 class="display-4">New Brown Corpus?</h1>
+            <hr>
+            <p>a richly grounded dataset inspired by child language acquisition</p>
+            <ul id="pros">
+                <li class="pro">simultaneous <b>visual</b>, <b>spatiotemporal</b>, and <b>audio</b> data</li>
+                <li class="pro">more like <b>child-directed speech</b> than other datasets</li>
+                <li class="pro">recorded in <b>VR</b>, which allows <b>semi-realistic motion and interaction</b></li>
+                <li class="pro">6 kitchen configurations across 2 distinct visual styles</li>
+                <li class="con">relatively <b>small</b>: 18k words recorded across 108 sessions</li>
+                <li class="con"><b>unlabeled</b>: no ground truth labels or segmentation</li>
+            </ul>
+            <a href="https://github.com/dylanebert/nbc" target="_blank">available for download on github</a>
+        </div>
+        <div class="col-sm-2">
+            <img class="my-3" id="brown-logo" src="https://www.brown.edu/university-identity/sites/all/themes/custom/university/i/logos/brown-logo-black.svg">
+            <img class="my-3" id="lunar-logo" src="{{ url_for('static', filename='lunarlogo.svg' )}}">
+        </div>
+    </div>
+</div>
+<div class="container-fluid bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <p class="h2">Spatiotemporal data</p>
+                <p>Spatial parameters are recorded every frame for the head, hands, and each object in the scene.</p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">parameter (type)</th>
+                            <th scope="col">description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>pos (xyz)</td>
+                            <td>absolute cartesian position of object center</td>
+                        </tr>
+                        <tr>
+                            <td>rot (xyzw)</td>
+                            <td>absolute quaternion rotation of object</td>
+                        </tr>
+                        <tr>
+                            <td>vel (xyz)</td>
+                            <td>absolute velocity of object center</td>
+                        </tr>
+                        <tr>
+                            <td>relPos (xyz)</td>
+                            <td>position relative to head</td>
+                        </tr>
+                        <tr>
+                            <td>relRot (xyzw)</td>
+                            <td>rotation relative to head</td>
+                        </tr>
+                        <tr>
+                            <td>relVel (xyz)</td>
+                            <td>velocity from frame of reference of the head</td>
+                        </tr>
+                        <tr>
+                            <td>bound (xyz)</td>
+                            <td>distance from object center to edge of bounding box</td>
+                        </tr>
+                        <tr>
+                            <td>inView (bool)</td>
+                            <td>whether object is in the participant's field of view</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-6">
+                <p class="text-muted my-1">example of y-position data (height) when picking up an apple:</p>
+                <video controls autoplay loop>
+                    <source src="{{ url_for('static', filename='apple_pick.mp4') }}" type="video/mp4">
+                </video>
+                <canvas id="applePickChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid py-5">
+    <div class="container">
+        <p class="h2">Image data</p>
+        <p>Images at each timestep are available for download, or can be viewed as videos below.</p>
+        <form>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <label for="participantDropdown">Participant:</label>
+                    <select class="custom-select" id="participantDropdown">
+                        <option data-val="1_1a" selected>Adam</option>
+                        <option data-val="2_2a">Eve</option>
+                        <option data-val="3_1b">Sarah</option>
+                        <option data-val="4_2b">Tarik</option>
+                        <option data-val="5_1c">Amber</option>
+                        <option data-val="6_2c">Vlad</option>
+                        <option data-val="7_1a">Ayush</option>
+                        <option data-val="8_2a">Colette</option>
+                        <option data-val="9_1b">Natalia</option>
+                        <option data-val="10_2b">Jonas</option>
+                        <option data-val="11_1c">Tamera</option>
+                        <option data-val="12_2c">Emma</option>
+                        <option data-val="13_1a">Sasha</option>
+                        <option data-val="14_2a">Saad</option>
+                        <option data-val="15_1b">Paris</option>
+                        <option data-val="16_2b">Boris</option>
+                        <option data-val="17_1c">Roberto</option>
+                        <option data-val="18_2c">Gage</option>
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                    <label for="taskDropdown">Task:</label>
+                    <select class="custom-select" id="taskDropdown">
+                        <option data-val="_task1" selected>Set Table</option>
+                        <option data-val="_task2">Eat</option>
+                        <option data-val="_task3">Wash Dishes</option>
+                        <option data-val="_task4">Play</option>
+                        <option data-val="_task5">Describe Objects</option>
+                        <option data-val="_task6">Clean Up</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+        <div class="text-center">
+            <video width="960" height="540" id="vid" controls>
+                <source src="https://plunarlabcit.services.brown.edu/videos/1_1a_task1.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+</div>
+<footer class="page-footer font-small bg-dark text-light pt-4 py-5">
+    <div class="container-fluid text-center">
+        <p><a id="footerLink" href="https://github.com/dylanebert/nbc" target="_blank">https://github.com/dylanebert/nbc</a></p>
+    </div>
+</footer>
+</body>
+<script>
+$('.custom-select').change(function() {
+    let val = $('#participantDropdown option:selected').data('val') + $('#taskDropdown option:selected').data('val')
+    let src = 'https://plunarlabcit.services.brown.edu/videos/' + val + '.mp4'
+    $('#vid').find('source').attr('src', src)
+    $('#vid')[0].load()
+})
+
+var ctx = $('#applePickChart')
+var applePickChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [7399, 7408, 7417, 7426, 7435, 7444, 7453, 7462, 7471, 7480, 7489],
+        datasets: [{
+            label: 'rhand height',
+            borderColor: 'rgb(54, 162, 235)',
+            fill: false,
+            data: [.599, .571, .533, .499, .468, .444, .439, .546, .635, .655, .653]
+        }, {
+            label: 'apple height',
+            borderColor: 'rgb(255, 99, 132)',
+            fill: false,
+            data: [.397, .397, .397, .397, .397, .397, .398, .512, .611, .634, .632]
+        }]
+    }
+})
+</script>
+</html>
