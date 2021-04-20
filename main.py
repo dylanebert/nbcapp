@@ -1,8 +1,9 @@
 import sqlite3
-from flask import Flask, render_template, g
+import json
+from flask import Flask, render_template, g, request
 app = Flask(__name__, static_url_path='/static')
 
-DATABASE = 'oddmanout.db'
+DATABASE = '/var/www/nbcapp/nbcapp/oddmanout.db'
 
 def get_db():
 	db = getattr(g, '_database', None)
@@ -28,13 +29,23 @@ def actions():
 def oddmanout():
 	return render_template('oddmanout.html')
 
-@app.route('/oddmanout-test')
+def make_dicts(cursor, row):
+	return dict((cursor.description[idx][0], value)
+				for idx, value in enumerate(row))
+
+@app.route('/oddmanout-query')
 def oddmanout_test():
+	group = request.args.get('group')
 	cur = get_db().cursor()
-	cur.execute('select * from oddmanout')
-	print(cur.fetchall())
+	cur.execute('select * from oddmanout where "group"=' + group + '\
+				order by random() limit 1')
+	rows = cur.fetchall()
+	if len(rows) == 0:
+		res = 'na'
+	else:
+		res = make_dicts(cur, rows[0])
 	cur.close()
-	return 'success'
+	return json.dumps(res)
 
 if __name__ == '__main__':
 	app.run()
