@@ -45,18 +45,28 @@ video {
 <script>
 $(document).ready(function() {
     ROOT = 'https://plunarlabcit.services.brown.edu/nbcapp/'
-    $.get(ROOT + 'oddmanout-query?group=0', function(res) {
-        data = $.parseJSON(res)
-        console.log(data)
-        $.each([data.a, data.b, data.c, data.d], function(i, url) {
-            $('#q' + i).html(`
-                <video width="960" height="540" id="vid` + i + `" controls autoplay muted>
-                    <source width="960" height="540" 
-                        src="` + url + `" type="video/mp4">
-                </video>
-            `)
-        })        
-    })
+    var id;
+
+    function get_random_from_group(group) {
+        $.get(ROOT + 'oddmanout-query?group=' + group, function(res) {
+            if(res == 'na') {
+                $('#q0').html('Finished - you can exit the window')
+            } else {
+                data = $.parseJSON(res)
+                id = data.id
+                console.log('received row with id ' + id)
+                console.log(data)
+                $.each([data.a, data.b, data.c, data.d], function(i, url) {
+                    $('#q' + i).html(`
+                        <video width="960" height="540" id="vid` + i + `" controls autoplay muted>
+                            <source width="960" height="540" 
+                                src="` + url + `" type="video/mp4">
+                        </video>
+                    `)
+                })
+            }
+        })
+    }
 
     $('body').keypress(function(e) {
         console.log('Registered keypress: ' + e.which)
@@ -74,9 +84,16 @@ $(document).ready(function() {
             answer = -1;
         }
         if(answer > -2) {
-            console.log('Todo: code to write answer ' + answer)
+            $.get(ROOT + 'oddmanout-write?id=' + id + '&response=' + answer, function(res) {
+                if(res == 'done') {
+                    console.log('wrote answer ' + answer + ' to id ' + id)
+                    get_random_from_group(0)
+                }
+            })
         }
     })
+
+    get_random_from_group(0)
 })
 </script>
 </html>
