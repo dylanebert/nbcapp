@@ -49,10 +49,10 @@ $(document).ready(function() {
 
     function get_random_from_group(group) {
         $.get(ROOT + 'oddmanout-query?group=' + group, function(res) {
+            data = $.parseJSON(res)
             if(res == 'na') {
                 $('#q0').html('Finished - you can exit the window')
-            } else {
-                data = $.parseJSON(res)
+            } else {                
                 id = data.id
                 console.log('received row with id ' + id)
                 console.log(data)
