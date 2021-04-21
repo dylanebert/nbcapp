@@ -4,6 +4,7 @@ from flask import Flask, render_template, g, request
 app = Flask(__name__, static_url_path='/static')
 
 DATABASE = '/var/www/nbcapp/nbcapp/oddmanout.db'
+# DATABASE = 'oddmanout.db'
 
 
 def get_db():
@@ -43,8 +44,9 @@ def make_dicts(cursor, row):
 def oddmanout_test():
     group = request.args.get('group')
     cur = get_db().cursor()
-    cur.execute('select * from oddmanout where "group"=' + group + '\
-                order by random() limit 1')
+    command = 'select * from oddmanout where "group"={} and response={}\
+                order by random() limit 1'.format(group, -1)
+    cur.execute(command)
     rows = cur.fetchall()
     if len(rows) == 0:
         res = 'na'
