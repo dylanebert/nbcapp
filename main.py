@@ -48,6 +48,7 @@ def oddmanout_test():
                 order by random() limit 1'.format(group, -1)
     cur.execute(command)
     rows = cur.fetchall()
+    print(rows)
     if len(rows) == 0:
         res = 'na'
     else:
