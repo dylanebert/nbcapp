@@ -3,8 +3,7 @@ import json
 from flask import Flask, render_template, g, request
 app = Flask(__name__, static_url_path='/static')
 
-# DATABASE = '/var/www/nbcapp/nbcapp/oddmanout.db'
-DATABASE = 'oddmanout.db'
+DATABASE = '/var/www/nbcapp/nbcapp/oddmanout.db'
 
 
 def get_db():
