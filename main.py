@@ -3,7 +3,8 @@ import json
 from flask import Flask, render_template, g, request
 app = Flask(__name__, static_url_path='/static')
 
-DATABASE = '/var/www/nbcapp/nbcapp/oddmanout.db'
+# DATABASE = '/var/www/nbcapp/nbcapp/oddmanout.db'
+DATABASE = 'oddmanout.db'
 
 
 def get_db():
@@ -52,6 +53,19 @@ def oddmanout_test():
         res = make_dicts(cur, rows[0])
     cur.close()
     return json.dumps(res)
+
+
+@app.route('/oddmanout-write')
+def oddmanout_write():
+    id = request.args.get('id')
+    response = request.args.get('response')
+    con = get_db()
+    cur = con.cursor()
+    command = 'update oddmanout set response={} where id={}'.format(response, id)
+    cur.execute(command)
+    con.commit()
+    cur.close()
+    return 'done'
 
 
 if __name__ == '__main__':
