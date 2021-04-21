@@ -47,6 +47,7 @@ $(document).ready(function() {
     ROOT = 'https://plunarlabcit.services.brown.edu/nbcapp/'
     $.get(ROOT + 'oddmanout-query?group=0', function(res) {
         data = $.parseJSON(res)
+        console.log(data)
         $.each([data.a, data.b, data.c, data.d], function(i, url) {
             $('#q' + i).html(`
                 <video width="960" height="540" id="vid` + i + `" controls autoplay muted>
