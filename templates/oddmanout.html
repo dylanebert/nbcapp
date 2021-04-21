@@ -19,7 +19,7 @@ video {
 </style>
 <body>
 <div class="container">
-    <h1>Which doesn't belong?</h1>
+    <h1 id="title">Which doesn't belong?</h1>
     <div class="row">
         <div class="col-sm-6">
             <h2>1</h2>
@@ -45,17 +45,21 @@ video {
 <script>
 $(document).ready(function() {
     ROOT = 'https://plunarlabcit.services.brown.edu/nbcapp/'
+    //ROOT = 'http://localhost:5000/'
     var id;
 
     function get_random_from_group(group) {
         $.get(ROOT + 'oddmanout-query?group=' + group, function(res) {
             data = $.parseJSON(res)
-            if(res == 'na') {
-                $('#q0').html('Finished - you can exit the window')
+            if(data == 'na') {
+                var i;
+                for(i = 0; i < 4; i++) {
+                    $('#q' + i).html('')
+                }
+                $('#title').html('Finished - you can exit the window')
             } else {                
                 id = data.id
                 console.log('received row with id ' + id)
-                console.log(data)
                 $.each([data.a, data.b, data.c, data.d], function(i, url) {
                     $('#q' + i).html(`
                         <video width="960" height="540" id="vid` + i + `" controls autoplay muted>
