@@ -62,7 +62,7 @@ $(document).ready(function() {
                 console.log('received row with id ' + id)
                 $.each([data.a, data.b, data.c, data.d], function(i, url) {
                     $('#q' + i).html(`
-                        <video width="960" height="540" id="vid` + i + `" controls autoplay muted>
+                        <video width="960" height="540" id="vid` + i + `" controls autoplay loop muted>
                             <source width="960" height="540" 
                                 src="` + url + `" type="video/mp4">
                         </video>
@@ -91,13 +91,13 @@ $(document).ready(function() {
             $.get(ROOT + 'oddmanout-write?id=' + id + '&response=' + answer, function(res) {
                 if(res == 'done') {
                     console.log('wrote answer ' + answer + ' to id ' + id)
-                    get_random_from_group(0)
+                    get_random_from_group(77893)
                 }
             })
         }
     })
 
-    get_random_from_group(0)
+    get_random_from_group(77893)
 })
 </script>
 </html>
