@@ -67,6 +67,7 @@ $(document).ready(function() {
     //ROOT = 'http://localhost:5000/'
     var id;
     var group = 0;
+    var modalShown = true;
 
     function get_random_from_group(group) {
         $.get(ROOT + 'oddmanout-query?group=' + group, function(res) {
@@ -93,6 +94,9 @@ $(document).ready(function() {
     }
 
     $('body').keypress(function(e) {
+        if(modalShown) {
+            return;
+        }
         console.log('Registered keypress: ' + e.which)
             
         var answer = -2;
@@ -120,6 +124,8 @@ $(document).ready(function() {
     $('#modalConfirm').click(function() {
         group = $('#group').text()
         console.log(group)
+        modalShown = false;
+        $('#modal').modal('hide')
     })
 
     $('#modal').modal({backdrop: 'static', keyboard: false})
