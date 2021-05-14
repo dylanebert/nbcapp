@@ -109,7 +109,7 @@ $(document).ready(function() {
         } else if(e.which == 52) {
             answer = 3;
         } else if(e.which == 48) {
-            answer = -1;
+            answer = 4;
         }
         if(answer > -2) {
             $.get(ROOT + 'oddmanout-write?id=' + id + '&response=' + answer, function(res) {
