@@ -25,10 +25,14 @@ video {
                 <h5 class="modal-title">Enter group number</h5>
             </div>
             <div class="modal-body">
-    
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="group">
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Confirm</button>
+                <button type="button" class="btn btn-primary" id="modalConfirm">Confirm</button>
             </div>
         </div>        
     </div>
@@ -62,6 +66,7 @@ $(document).ready(function() {
     ROOT = 'https://plunarlabcit.services.brown.edu/nbcapp/'
     //ROOT = 'http://localhost:5000/'
     var id;
+    var group = 0;
 
     function get_random_from_group(group) {
         $.get(ROOT + 'oddmanout-query?group=' + group, function(res) {
@@ -106,14 +111,18 @@ $(document).ready(function() {
             $.get(ROOT + 'oddmanout-write?id=' + id + '&response=' + answer, function(res) {
                 if(res == 'done') {
                     console.log('wrote answer ' + answer + ' to id ' + id)
-                    get_random_from_group(77893)
+                    get_random_from_group(group)
                 }
             })
         }
     })
 
-    $('#modal').modal({backdropj: 'static', keyboard: false})
-    get_random_from_group(77893)
+    $('#modalConfirm'.click(function() {
+        group = $('#group').text()
+        console.log(group)
+    }))
+
+    $('#modal').modal({backdrop: 'static', keyboard: false})
 })
 </script>
 </html>
